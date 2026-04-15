@@ -7,6 +7,7 @@ import Login from './login';
 createRoot(document.getElementById('root')).render(
 
 <BrowserRouter>
+
     <Routes>
         {/* Ruta principal */}
         <Route path="/" element={<Login />} />
