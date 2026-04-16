@@ -1,2 +1,4 @@
 *.lck
 *.bak_000f
+/env
+/__pycache__

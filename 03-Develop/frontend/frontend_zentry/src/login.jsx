@@ -7,34 +7,36 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rol, setRol] = useState("");
-
+  const [response, setResponse] = useState({});
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!rol) {
-    alert("Selecciona un rol");
-    return;
-
-  }
+      alert("Selecciona un rol");
+      return;
+    }
 
     try {
-      const response = await axios.post('http://127.0.0.1:8000/user/signin', {
-        email: email,
-        password: password,
-        rol: rol
-      });
+      const res = await axios.post(
+        'http://127.0.0.1:8000/user/signin',
+        {
+          email: email,
+          password: password
+        }
+      );
 
-      console.log(response);
+      console.log(res.data);
+      setResponse(res.data);
 
-      // Navegación según rol
+      // Redirigir según rol seleccionado (o backend si luego lo cambias)
       navigate(`/${rol}`);
 
     } catch (error) {
       console.error(error);
+      alert("Error al iniciar sesión");
     }
-
   };
 
   return (
@@ -50,37 +52,38 @@ export default function Login() {
         {/* FORMULARIO */}
         <form onSubmit={handleSubmit} className="space-y-5">
 
-            { /* CAMPO USUARIO */}
-            <div>
-                <input
-                id="email"
-                type="email"
-                required
-                className="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-800 outline-none transition-all"
-                placeholder="Correo electrónico"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                />
-            </div>
+          {/* CAMPO EMAIL */}
+          <div>
+            <input
+              id="email"
+              type="email"
+              required
+              className="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-800 outline-none transition-all"
+              placeholder="Correo electrónico"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
 
-            {/* CAMPO CONTRASEÑA */}  
-            <div>
-                <input
-                id='contrasena'
-                type="password"
-                required
-                className="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-800 outline-none transition-all"
-                placeholder="Contraseña"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                />
-            </div>
-
+          {/* CAMPO PASSWORD */}
+          <div>
+            <input
+              id="contrasena"
+              type="password"
+              required
+              className="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-800 outline-none transition-all"
+              placeholder="Contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          
           {/* BOTON */}
+
           <button
             type="submit"
             className="w-full bg-green-700 hover:bg-green-800 text-white font-bold py-2.5 rounded-lg transition-colors shadow-md"
-          >
+          > 
             Iniciar sesión
           </button>
         </form>
