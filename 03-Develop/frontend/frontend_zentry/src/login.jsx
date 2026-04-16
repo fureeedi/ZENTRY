@@ -1,5 +1,6 @@
-import { useState } from 'react';
 import './assets/styles/index.css';
+import { useState } from 'react';
+import { useNavigate, Link } from "react-router-dom";
 import axios from 'axios';
 
 export default function Login() {
@@ -7,10 +8,34 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [rol, setRol] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-  };
+  const navigate = useNavigate();
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!rol) {
+    alert("Selecciona un rol");
+    return;
+
+  }
+
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/user/signin', {
+        email: email,
+        password: password,
+        rol: rol
+      });
+
+      console.log(response);
+
+      // Navegación según rol
+      navigate(`/${rol}`);
+
+    } catch (error) {
+      console.error(error);
+    }
+
+  };
 
   return (
     <div className="min-h-screen bg-slate-300 flex items-center justify-center">
@@ -95,7 +120,7 @@ export default function Login() {
                     type="radio"
                     name="rol"
                     value="Administración"
-                    checked={rol === "Administración"}
+                    checked={rol === "Administracion"}
                     onChange={(e) => setRol(e.target.value)}
                     className="accent-blue-950"
                 />
@@ -111,6 +136,16 @@ export default function Login() {
             Iniciar sesión
           </button>
         </form>
+
+        {/* Recuperar contraseña */}
+        <div className="mt-4 text-center">
+          <Link
+            to="/save-password"
+            className="text-sm text-gray-500 hover:text-blue-900 transition duration-150"
+          >
+            ¿Olvidó contraseña?
+          </Link>
+        </div>
       </div>
     </div>
   );
