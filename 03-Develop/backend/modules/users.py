@@ -1,7 +1,9 @@
-from typing import Optional, List
+from typing import Optional
 from pydantic import BaseModel
-from pymongo import AsyncMongoClient
+from pymongo import AsyncMongoClient, ReturnDocument
 from bson import ObjectId
+from passlib.hash import sha256_crypt
+
 class UserSchema(BaseModel):
     nombre: str
     documento: int
@@ -14,7 +16,7 @@ class UserSchema(BaseModel):
 class UserSchemaUpdate(BaseModel):
     nombre: Optional[str] = None
     documento: Optional[int] = None
-    t_documento: Optional[str] = None  # Corregido Optional con O mayúscula
+    t_documento: Optional[str] = None
     t_vinculo: Optional[str] = None
     email: Optional[str] = None
     password: Optional[str] = None
@@ -27,25 +29,58 @@ class Users:
 
     async def create_user(self, user_data: UserSchema):
         data = user_data.model_dump()
-        
+        # Hashear password antes de guardar
+        data['password'] = sha256_crypt.hash(data['password'])
         result = await self.collection.insert_one(data)
         return str(result.inserted_id)
 
     async def get_users(self):
-        
         cursor = self.collection.find()
         users_list = await cursor.to_list(length=100)
-        
         for user in users_list:
             user["_id"] = str(user["_id"])
-
+            user.pop('password', None) # Seguridad: no enviar passwords
         return users_list
-    async def get_user(self, user_data: UserSchemaUpdate): # Usa el Update que permite campos opcionales
-        data = user_data.model_dump(exclude_none=True)
-        if not data:
-            return None
-        
-        user = await self.collection.find_one(data) # Corregido de colection a collection
+
+    async def get_user_by_email(self, email: str):
+        user = await self.collection.find_one({'email': email})
         if user:
             user['_id'] = str(user['_id'])
         return user
+
+    async def update_user(self, id: str, user_data: UserSchemaUpdate):
+        data = user_data.model_dump(exclude_none=True)
+        
+        # Si actualiza password, hay que hashearlo
+        if 'password' in data:
+            data['password'] = sha256_crypt.hash(data['password'])
+
+        # Nota: La validación de 'admin' aquí es ilustrativa. 
+        # En una app real, verificarías el rol del usuario que HACE la petición.
+        if data.get('role') == 'admin':
+            updated_user = await self.collection.find_one_and_update(
+                {'_id': ObjectId(id)},
+                {'$set': data},
+                return_document=ReturnDocument.AFTER
+            )
+            if updated_user:
+                updated_user['_id'] = str(updated_user['_id'])
+                updated_user.pop('password', None)
+            return updated_user
+        else:
+            return None # O manejar como excepción de autorización
+    
+    async def delete_user(self, id: str):
+        # Intentamos buscar y eliminar por ID
+        deleted_user = await self.collection.find_one_and_delete(
+            {'_id': ObjectId(id)}
+        )
+        
+        if not deleted_user:
+            return None # O podrías retornar {'msg': 'usuario no existente'}
+            
+        # Retornamos el usuario borrado (opcional, por si quieres confirmar qué se borró)
+        deleted_user['_id'] = str(deleted_user['_id'])
+        deleted_user.pop('password', None)
+        return deleted_user
+     
