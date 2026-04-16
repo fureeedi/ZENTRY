@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, Header
+from fastapi import APIRouter, HTTPException, Depends, Header,Body
 from modules.users import Users, UserSchema, UserSchemaUpdate
 from config.config import get_connection
 from auth.jwt_handler import get_current_admin_role # Importa tu validador
@@ -39,27 +39,30 @@ async def signin(login_data: UserSchemaUpdate):
     return {
         "access_token": token, 
         "token_type": "bearer",
+        "id":user_db.get('_id'),
         "role": user_db.get("role")
     }
 
 # --- RUTAS PROTEGIDAS (Requieren Token de Admin) ---
 
-@routes_user.get('/users')
+@routes_user.get('/all')
 async def get_users(admin_check: str = Depends(get_current_admin_role)):
     conn = get_connection()
     user_manager = Users(conn)
+    
     return await user_manager.get_users()
 
-@routes_user.post('/{id}/update')
+@routes_user.put('/{id}/update')
 async def update(
-    id: str, 
-    user: UserSchemaUpdate, 
-    admin_check: str = Depends(get_current_admin_role) # Solo admins entran aquí
+    id: str,
+    user: UserSchemaUpdate = Body(...),  # 👈 OBLIGATORIO
+    admin_check: str = Depends(get_current_admin_role)
 ):
+    print("USER:", user)
+
     conn = get_connection()
     user_manager = Users(conn)
     
-    # El 'id' viene de la URL, 'user' viene del body
     result = await user_manager.update_user(id, user)
     
     if not result:

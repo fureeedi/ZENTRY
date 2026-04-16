@@ -49,27 +49,35 @@ class Users:
         return user
 
     async def update_user(self, id: str, user_data: UserSchemaUpdate):
+        # Convertir a dict ignorando campos None
         data = user_data.model_dump(exclude_none=True)
-        
-        # Si actualiza password, hay que hashearlo
+
+        # Validar que haya algo para actualizar
+        if not data:
+            return None
+
+        # Hashear password si viene en el update
         if 'password' in data:
             data['password'] = sha256_crypt.hash(data['password'])
 
-        # Nota: La validación de 'admin' aquí es ilustrativa. 
-        # En una app real, verificarías el rol del usuario que HACE la petición.
-        if data.get('role') == 'admin':
+        try:
             updated_user = await self.collection.find_one_and_update(
                 {'_id': ObjectId(id)},
                 {'$set': data},
                 return_document=ReturnDocument.AFTER
             )
-            if updated_user:
-                updated_user['_id'] = str(updated_user['_id'])
-                updated_user.pop('password', None)
-            return updated_user
-        else:
-            return None # O manejar como excepción de autorización
-    
+        except Exception:
+            # ID inválido (no es ObjectId)
+            return None
+
+        if not updated_user:
+            return None
+
+        # Limpieza de respuesta
+        updated_user['_id'] = str(updated_user['_id'])
+        updated_user.pop('password', None)
+
+        return updated_user
     async def delete_user(self, id: str):
         # Intentamos buscar y eliminar por ID
         deleted_user = await self.collection.find_one_and_delete(

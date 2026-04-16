@@ -7,7 +7,7 @@ from fastapi.security import OAuth2PasswordBearer
 # Configuración básica
 SECRET_KEY = "Llave_Super_SECRETA"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+ACCESS_TOKEN_EXPIRE_MINUTES = 120
 
 # Esta línea permite que Swagger UI muestre el botón de "Authorize" 
 # y sepa que el token se envía en la URL de 'signin'
@@ -56,5 +56,6 @@ async def get_current_admin_role(token: str = Depends(oauth2_scheme)):
             
         return role # Retornamos el rol si todo está ok
         
-    except JWTError:
+    except JWTError as e:
+        print("🔥 ERROR JWT:", e)
         raise credentials_exception
