@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import './assets/styles/index.css';
+import axios from 'axios';
 
 export default function Login() {
-  const [usuario, setUsuario] = useState("");
-  const [contrasena, setContrasena] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [rol, setRol] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
   };
+
 
   return (
     <div className="min-h-screen bg-slate-300 flex items-center justify-center">
@@ -26,13 +28,13 @@ export default function Login() {
             { /* CAMPO USUARIO */}
             <div>
                 <input
-                id="usuario"
-                type="text"
+                id="email"
+                type="email"
                 required
                 className="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-800 outline-none transition-all"
-                placeholder="Usuario"
-                value={usuario}
-                onChange={(e) => setUsuario(e.target.value)}
+                placeholder="Correo electrónico"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 />
             </div>
 
@@ -44,8 +46,8 @@ export default function Login() {
                 required
                 className="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-800 outline-none transition-all"
                 placeholder="Contraseña"
-                value={contrasena}
-                onChange={(e) => setContrasena(e.target.value)}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 />
             </div>
 
