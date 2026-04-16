@@ -76,58 +76,6 @@ export default function Login() {
                 />
             </div>
 
-          {/* ROLES */}
-          <div className="flex flex-wrap items-center gap-4 justify-center sm:justify-start">
-
-                <label className="flex items-center justify-center gap-2 text-sm font-bold text-slate-600">
-                <input
-                    type="radio"
-                    name="rol"
-                    value="Residente"
-                    checked={rol === "Residente"}
-                    onChange={(e) => setRol(e.target.value)}
-                    className="accent-blue-950"
-                />
-                Residente
-                </label>
-
-                <label className="flex items-center justify-center gap-2 text-sm font-bold text-slate-600">
-                <input
-                    type="radio"
-                    name="rol"
-                    value="Propietario"
-                    checked={rol === "Propietario"}
-                    onChange={(e) => setRol(e.target.value)}
-                    className="accent-blue-950"
-                />
-                Propietario
-                </label>
-
-                <label className="flex items-center justify-center gap-2 text-sm font-bold text-slate-600">
-                <input
-                    type="radio"
-                    name="rol"
-                    value="Vigilancia"
-                    checked={rol === "Vigilancia"}
-                    onChange={(e) => setRol(e.target.value)}
-                    className="accent-blue-950"
-                />
-                Vigilancia
-                </label>
-
-                <label className="flex items-center justify-center gap-2 text-sm font-bold text-slate-600">
-                <input
-                    type="radio"
-                    name="rol"
-                    value="Administración"
-                    checked={rol === "Administracion"}
-                    onChange={(e) => setRol(e.target.value)}
-                    className="accent-blue-950"
-                />
-                Administración
-                </label>
-            </div>
-
           {/* BOTON */}
           <button
             type="submit"
