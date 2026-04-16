@@ -4,7 +4,10 @@ import { Link } from "react-router-dom";
 
 const ICON_URLS = {
     // Menú Lateral (URLs de Placeholders en lugar de SVG)
-    anuncios: 'https://cdn-icons-png.flaticon.com/512/2415/2415903.png',     
+    anuncios: 'https://cdn-icons-png.flaticon.com/512/2415/2415903.png',
+    solicitudes_reservas: 'https://cdn-icons-png.flaticon.com/512/1440/1440930.png',
+    zonas_comunes: 'https://cdn-icons-png.flaticon.com/512/1269/1269825.png ',
+    residentes_propietarios: 'https://cdn-icons-png.flaticon.com/512/1441/1441323.png'    
 
     // Icono para cerrar el menú (X) - Se mantiene como SVG para la UI
 
@@ -40,7 +43,10 @@ export default function Administracion() {
   // 2. Usamos las URLs definidas en ICON_URLS para el array de items
   const menuItems = [
 
-    { iconUrl: ICON_URLS.anuncios, title: 'Anuncios', Link ,to: '/admin/registros-funcionarios' },
+    { iconUrl: ICON_URLS.anuncios, title: 'Anuncios', Link ,to: '/administracion/anuncios' },
+    { iconUrl: ICON_URLS.solicitudes_reservas, title: 'Solicitudes y Reservas', Link ,to: '/administracion/solicitudes-reservas' },
+    { iconUrl: ICON_URLS.zonas_comunes, title: 'Zonas Comunes', Link ,to: '/administracion/zonas-comunes' },
+    { iconUrl: ICON_URLS.residentes_propietarios, title: 'Residentes y Propietarios', Link ,to: '/administracion/residentes-propietarios' }
  
   ];
 
@@ -54,7 +60,7 @@ export default function Administracion() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 bg-slate-300">
       
       {/* 1. Barra de Navegación Superior (Fixed Header) */}
       <header className="fixed top-0 left-0 w-full bg-white shadow-lg z-20 border-b border-gray-200 p-3 md:p-4">
@@ -63,13 +69,13 @@ export default function Administracion() {
           {/* Botón MENÚ */}
           <button
             onClick={toggleMenu}
-            className="p-2.5 border-2 border-gray-300 rounded-lg font-bold text-gray-700 bg-gray-100 hover:bg-gray-200 transition duration-150 uppercase"
+            className="p-2.5 rounded-lg font-bold text-gray-700 bg-gray-300 hover:bg-gray-400 transition duration-150 uppercase"
           >
             MENÚ
           </button>
 
           {/* Título Central */}
-          <h1 className="text-base md:text-xl font-extrabold text-gray-900 tracking-wider text-center uppercase truncate mx-4">
+          <h1 className="text-base md:text-xl font-extrabold text-gray-900 tracking-wider text-center uppercase truncate mx-4 font-extrabold text-indigo-900">
             ZENTRY
           </h1>
 
@@ -77,7 +83,7 @@ export default function Administracion() {
 
           <Link
             to="/"
-            className="p-2.5 border-2 border-slate-500 rounded-lg font-semibold text-white bg-slate-600 hover:bg-slate-700 transition duration-150 text-sm md:text-base whitespace-nowrap"> 
+            className="p-2.5 rounded-lg font-semibold text-white bg-orange-600 hover:bg-orange-700 transition duration-150 text-sm md:text-base whitespace-nowrap"> 
           
             Cerrar Sesión
           </Link>
@@ -123,11 +129,11 @@ export default function Administracion() {
 
     {/* Contenedor para el contenido principal del mensaje principal*/}
     <div className='p-45'>
-            <div className="p-6 md:p-10 max-w-3xl mx-auto bg-white rounded-xl shadow-2xl border-2 border-indigo-600/50">
+            <div className="p-6 md:p-10 max-w-3xl mx-auto bg-white rounded-xl shadow-2xl border border-slate-300">
                 <div className='text-center'>
                     
                     <h2 className="text-3xl font-extrabold text-gray-900 mb-2">
-                        👋 Panel de Control Zentry
+                        Panel de Control Zentry
                     </h2>
                     
                     <p className="text-lg text-gray-600">
