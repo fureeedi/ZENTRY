@@ -6,17 +6,10 @@ import axios from 'axios';
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [rol, setRol] = useState("");
-  const [response, setResponse] = useState({});
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!rol) {
-      alert("Selecciona un rol");
-      return;
-    }
 
     try {
       const res = await axios.post(
@@ -27,15 +20,19 @@ export default function Login() {
         }
       );
 
-      console.log(res.data);
-      setResponse(res.data);
+      // 🔥 Guardar token correctamente
+      const token = res.data.access_token;
+      localStorage.setItem("token", token);
 
-      // Redirigir según rol seleccionado (o backend si luego lo cambias)
-      navigate(`/${rol}`);
+      console.log("Login exitoso:", res.data);
+
+      // 🔥 Usar el rol que viene del backend
+      const role = res.data.role;
+      navigate(`/${role}`);
 
     } catch (error) {
-      console.error(error);
-      alert("Error al iniciar sesión");
+      console.error("Error login:", error);
+      alert("Credenciales incorrectas o error en el servidor");
     }
   };
 
@@ -52,47 +49,44 @@ export default function Login() {
         {/* FORMULARIO */}
         <form onSubmit={handleSubmit} className="space-y-5">
 
-          {/* CAMPO EMAIL */}
+          {/* EMAIL */}
           <div>
             <input
-              id="email"
               type="email"
               required
-              className="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-800 outline-none transition-all"
+              className="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-800 outline-none"
               placeholder="Correo electrónico"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
-          {/* CAMPO PASSWORD */}
+          {/* PASSWORD */}
           <div>
             <input
-              id="contrasena"
               type="password"
               required
-              className="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-800 outline-none transition-all"
+              className="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-800 outline-none"
               placeholder="Contraseña"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          
-          {/* BOTON */}
 
+          {/* BOTÓN */}
           <button
             type="submit"
-            className="w-full bg-green-700 hover:bg-green-800 text-white font-bold py-2.5 rounded-lg transition-colors shadow-md"
+            className="w-full bg-green-700 hover:bg-green-800 text-white font-bold py-2.5 rounded-lg transition"
           > 
             Iniciar sesión
           </button>
         </form>
 
-        {/* Recuperar contraseña */}
+        {/* RECUPERAR CONTRASEÑA */}
         <div className="mt-4 text-center">
           <Link
             to="/save-password"
-            className="text-sm text-gray-500 hover:text-blue-900 transition duration-150"
+            className="text-sm text-gray-500 hover:text-blue-900"
           >
             ¿Olvidó contraseña?
           </Link>
